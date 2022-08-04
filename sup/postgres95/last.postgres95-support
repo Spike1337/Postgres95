@@ -38,6 +38,8 @@ contrib/zap_ltv/README
 contrib/zap_ltv/zap_ltv.pl
 doc
 doc/FAQ
+doc/FAQ-Irix
+doc/FAQ-Linux
 doc/MIGRATION_1.0_to_1.01
 doc/Makefile
 doc/README.flex

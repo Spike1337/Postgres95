@@ -7,7 +7,7 @@
 #
 #
 # IDENTIFICATION
-#    $Header: /usr/local/cvsroot/postgres95/src/Makefile.global,v 1.19.2.8 1996/09/21 19:11:22 scrappy Exp $
+#    $Header: /usr/local/cvsroot/postgres95/src/Makefile.global,v 1.19.2.17 1996/10/31 20:25:56 scrappy Exp $
 #
 # NOTES
 #    This is seen by any Makefiles that include mk/postgres.mk. To
@@ -42,7 +42,7 @@
 #	linux		-	Intel x86 on Linux 1.2 and Linux ELF
 #				(For non-ELF Linux, you need to comment out 
 #				"LINUX_ELF=1" in src/mk/port/postgres.mk.linux)
-#	BSD44_derived	-	OSs derived from 4.4-lite BSD (NetBSD, FreeBSD)
+#	
 #       bsdi            -       BSD/OS 2.0 and 2.01
 #       bsdi_2_1        -       BSD/OS 2.1
 #	aix		-	IBM on AIX 3.2.5
@@ -60,15 +60,15 @@
 #  make sure that you have no whitespaces after the PORTNAME setting
 #  or the makefiles can get confused
 # 
-PORTNAME=	BSD44_derived
+PORTNAME=	UNDEFINED
 
 # SRCDIR specifies where the source files are. 
-SRCDIR=		/home/tools/postgres95-1.02/src
+SRCDIR=		/usr/local/postgres95/src
 
 # For convenience, POSTGRESDIR is where DATADIR, BINDIR, and LIBDIR 
 # and other target destinations are rooted.  Of course, each of these is 
 # changable separately. 
-POSTGRESDIR=	/home/tools/postgres95-1.02
+POSTGRESDIR=	/usr/local/postgres95
 
 # POSTGRESLOGIN is the login name of the user who gets special
 # privileges within the database.  By default it is "postgres", but
@@ -142,7 +142,7 @@ ENFORCE_ALIGNMENT= true
 
 # turn this on if you prefer European style dates instead of American
 # style dates
-EUROPEAN_DATES = 0
+#EUROPEAN_DATES = 0
 
 # Comment out PROFILE to disable profiling.
 #
@@ -158,7 +158,7 @@ EUROPEAN_DATES = 0
 #    and READLINE_LIBDIR to reflect the location of the readline and history
 #    headers and libraries.
 #
-USE_READLINE= true
+#USE_READLINE= true
 
 # directories for the readline and history libraries.
 READLINE_INC=  -I/home/tools/include
@@ -176,41 +176,6 @@ ifdef HBA
 HBAFLAGS= -DHBA
 endif
 
-# If you plan to use Kerberos for authentication...
-#
-# Comment out KRBVERS if you do not use Kerberos.
-# 	Set KRBVERS to "4" for Kerberos v4, "5" for Kerberos v5.
-#	XXX Edit the default Kerberos variables below!
-#
-#KRBVERS=	5
-
-# Globally pass Kerberos file locations.
-#	these are used in the postmaster and all libpq applications.
-#
-#	Adjust KRBINCS and KRBLIBS to reflect where you have Kerberos
-#		include files and libraries installed.
-#	PG_KRB_SRVNAM is the name under which POSTGRES is registered in
-#		the Kerberos database (KDC).
-#	PG_KRB_SRVTAB is the location of the server's keytab file.
-#
-ifdef KRBVERS
-KRBINCS= -I/usr/athena/include
-KRBLIBS= -L/usr/athena/lib
-KRBFLAGS+= $(KRBINCS) -DPG_KRB_SRVNAM='"postgres_dbms"'
-   ifeq ($(KRBVERS), 4)
-KRBFLAGS+= -DKRB4
-KRBFLAGS+= -DPG_KRB_SRVTAB='"/etc/srvtab"'
-KRBLIBS+= -lkrb -ldes
-   else
-   ifeq ($(KRBVERS), 5)
-KRBFLAGS+= -DKRB5
-KRBFLAGS+= -DPG_KRB_SRVTAB='"FILE:/krb5/srvtab.postgres"'
-KRBLIBS+= -lkrb5 -lcrypto -lcom_err -lisode
-   endif
-   endif
-endif
-
-#
 # location of Tcl/Tk headers and libraries
 #
 # Uncomment this to build the tcl utilities.
@@ -226,7 +191,10 @@ TK_LIB = -ltk4.1
 
 X11_INCDIR = /usr/include
 X11_LIBDIR = /usr/lib
-X11_LIB = -lX11 -lsocket -lnsl
+# If your OS requires these libraries, they should be put in
+# Makefile.custom with a line similar to:
+# X11_LIB+= -lsocket -lnsl
+X11_LIB = -lX11 
 
 #
 # include port specific rules and variables. For instance:
@@ -279,7 +247,7 @@ endif
 
 # Globally pass PORTNAME
 CFLAGS+= -DPORTNAME_$(PORTNAME)
-CFLAGS += -I ../../backend/port/$(PORTNAME)
+CFLAGS += -I../../backend/port/$(PORTNAME)
 
 # Globally pass the default TCP port for postmaster(1).
 CFLAGS+= -DPOSTPORT='"$(POSTPORT)"'

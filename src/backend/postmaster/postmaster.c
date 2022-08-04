@@ -10,7 +10,7 @@
  *
  *
  * IDENTIFICATION
- *    $Header: /usr/local/cvsroot/postgres95/src/backend/postmaster/postmaster.c,v 1.3.2.3 1996/10/04 20:33:18 scrappy Exp $
+ *    $Header: /usr/local/cvsroot/postgres95/src/backend/postmaster/postmaster.c,v 1.3.2.5 1996/10/24 07:37:49 scrappy Exp $
  *
  * NOTES
  *
@@ -541,7 +541,7 @@ ServerLoop()
 		}
 		FD_CLR(port->sock, &basemask);
 		StreamClose(port->sock);
-		next = DLGetPred(curr);
+		next = DLGetSucc(curr);
 		DLRemove(curr);
 		DLFreeElem(curr);
 		curr = next;
@@ -807,7 +807,7 @@ BackendStartup(StartupInfo *packet, /* client's startup packet */
     static char	envEntry[4][2 * ARGV_SIZE];
     
     for (i = 0; i < 4; ++i) {
-	memset(envEntry[i], 2*ARGV_SIZE,0);
+	memset(envEntry[i], 0, 2*ARGV_SIZE);
     }
     /*
      * Set up the necessary environment variables for the backend

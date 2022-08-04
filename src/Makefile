@@ -7,7 +7,7 @@
 #
 #
 # IDENTIFICATION
-#    $Header: /usr/local/cvsroot/postgres95/src/Makefile,v 1.3.2.2 1996/08/20 04:10:35 scrappy Exp $
+#    $Header: /usr/local/cvsroot/postgres95/src/Makefile,v 1.3.2.4 1996/10/25 09:42:47 scrappy Exp $
 #
 # NOTES
 #	objdir	- location of the objects and generated files (eg. obj)
@@ -26,6 +26,11 @@ ETAGS = etags
 XARGS = xargs
 
 .DEFAULT all:
+	@if test $(PORTNAME) = UNDEFINED; then \
+	  echo You must set the PORTNAME value in Makefile.global before ;\
+	  echo you can build Postgres. ;\
+	  false ;\
+	fi
 	$(MAKE) -C backend $@
 	$(MAKE) -C libpq $@
 ifeq ($(USE_TCL), true)
@@ -35,7 +40,9 @@ endif
 ifeq (../doc, $(wildcard ../doc))
 	$(MAKE) -C ../doc $@
 endif
-	@echo All of Postgres95 is successfully made.  Ready to install.
+	@if test $@. = all. -o $@. = .; then \
+	  echo All of Postgres95 is successfully made.  Ready to install. ;\
+	fi
 
 TAGS:
 	rm -f TAGS; \
